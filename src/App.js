@@ -57,11 +57,12 @@ function App() {
         <input type="text" placeholder="Enter city" value={searchQuery} onChange={handleChange} />
         <button type="submit">Search</button>
       </form>
-      
-      {loading && <p>Loading data…</p>}
-      
       {alert && <AlertBox message={alert} onClose={handleCloseAlert} />}
-      {weather && (
+
+      {loading ? <p>Loading data…</p>
+      
+      
+      :weather && (
         <div className="weather-cards">
           <div className="weather-card">Temperature: {weather.temp_c}°C</div>
           <div className="weather-card">Humidity: {weather.humidity}%</div>
