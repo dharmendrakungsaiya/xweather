@@ -20,8 +20,9 @@ function App() {
         try {
           const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`);
           const data = await res.json();
-          setLoading(false);
+          
           if (res.ok) {
+            setLoading(false);
             setWeather(data.current);
             setAlert("");
           } else {
