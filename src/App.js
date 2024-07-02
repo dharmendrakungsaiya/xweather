@@ -53,10 +53,10 @@ function App() {
 
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
+      
         <input type="text" placeholder="Enter city" value={searchQuery} onChange={handleChange} />
-        <button type="submit">Search</button>
-      </form>
+        <button type="button" onClick={handleSubmit}>Search</button>
+      
       {alert && <AlertBox message={alert} onClose={handleCloseAlert} />}
 
       {loading ? <p>Loading data…</p>
