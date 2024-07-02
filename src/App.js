@@ -10,6 +10,8 @@ function App() {
   const [alert, setAlert] = useState("");
   const [loading, setLoading] = useState(false);
 
+  
+
   useEffect(() => {
     const fetchWeather = async () => {
       if (location) {
@@ -18,21 +20,33 @@ function App() {
         try {
           const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`);
           const data = await res.json();
-          setLoading(false);
-          if (res.ok) {
-            setWeather(data.current);
-            setAlert("");
-          } else {
-            setWeather(null);
-            setAlert(data.error.message || "Failed to fetch weather data.");
-          }
+
+          
+          const minimumLoadingTime = 3000;
+          const fetchDuration = new Date() - startTime;
+          const remainingLoadingTime = minimumLoadingTime - fetchDuration;
+
+          setTimeout(() => {
+            setLoading(false);
+            if (res.ok) {
+              setWeather(data.current);
+              setAlert("");
+            } else {
+              setWeather(null);
+              setAlert(data.error.message || "Failed to fetch weather data.");
+            }
+          }, remainingLoadingTime > 0 ? remainingLoadingTime : 0);
         } catch (error) {
-          setLoading(false);
-          setWeather(null);
-          setAlert("Failed to fetch weather data.");
+          setTimeout(() => {
+            setLoading(false);
+            setWeather(null);
+            setAlert("Failed to fetch weather data.");
+          }, 2000); 
         }
       }
-    }
+    };
+
+    const startTime = new Date();
     fetchWeather();
   }, [location]);
 
