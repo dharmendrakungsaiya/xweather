@@ -12,7 +12,7 @@ function App() {
 
   
 
- useEffect(() => {
+  useEffect(() => {
     const fetchWeather = async () => {
       if (location) {
         setLoading(true);
