@@ -55,9 +55,9 @@ function App() {
         <input type="text" placeholder="Enter city" value={searchQuery} onChange={handleChange} />
         <button type="submit">Search</button>
       </form>
-      <div>
+      
       {loading && <p>Loading data…</p>}
-      </div>
+      
       {alert && <AlertBox message={alert} onClose={handleCloseAlert} />}
       {weather && (
         <div className="weather-cards">
