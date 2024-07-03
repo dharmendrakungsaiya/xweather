@@ -1,74 +1,53 @@
-
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.css';
-import AlertBox from './alertbox';
+
 
 function App() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("");
-  const [weather, setWeather] = useState(null);
-  const [alert, setAlert] = useState("");
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState({});
   const [loading, setLoading] = useState(false);
 
-  
+  const fetchWeather = async (city) => {
+    setLoading(true);
+    const apiKey = "ee7866e3be95433e83781907240205";
+    try {
+      const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`);
+      const data = await res.json();
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      if (location) {
-        setLoading(true);
-        const apiKey = "ee7866e3be95433e83781907240205";
-        try {
-          const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`);
-          const data = await res.json();
-          
-          if (res.ok) {
-            setLoading(false);
-            setWeather(data.current);
-            setAlert("");
-          } else {
-            setWeather(null);
-            setAlert(data.error.message || "Failed to fetch weather data.");
-          }
-        } catch (error) {
-          setLoading(false);
-          setWeather(null);
-          setAlert("Failed to fetch weather data.");
-        }
+      if (data.error) {
+        alert("Failed to fetch weather data");
       }
+      setWeather(data);
+
+    } catch (error) {
+      console.error("Failed to fetch weather data");
+    } finally {
+      setLoading(false);
     }
-    fetchWeather();
-  }, [location]);
-
-  const handleChange = (e) => {
-    setSearchQuery(e.target.value);
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLocation(searchQuery);
-  }
-
-  const handleCloseAlert = () => {
-    setAlert("");
-  }
+  };
 
   return (
     <div className="App">
-      
-        <input type="text" placeholder="Enter city" value={searchQuery} onChange={handleChange} />
-        <button type="button" onClick={handleSubmit}>Search</button>
-      
-      {alert && <AlertBox message={alert} onClose={handleCloseAlert} />}
+      <div>
+        <input type='text' onChange={(e) => setCity(e.target.value)} />
+        <button type='button' onClick={() => fetchWeather(city)}>Search</button>
+      </div>
+      {loading && <p>Loading data...</p>}
 
-      {loading ? <p>Loading data…</p>
-      
-      
-      :weather && (
+      {!loading && weather.current && Object.keys(weather).length > 0 && (
         <div className="weather-cards">
-          <div className="weather-card">Temperature: {weather.temp_c}°C</div>
-          <div className="weather-card">Humidity: {weather.humidity}%</div>
-          <div className="weather-card">Condition: {weather.condition.text}</div>
-          <div className="weather-card">Wind Speed: {weather.wind_kph} kph</div>
+          <div className="weather-card"><h3>Temperature: </h3>
+            <p>{weather.current.temp_c}°C</p>
+          </div>
+          <div className="weather-card"><h3>Humidity: </h3>
+            <p>{weather.current.humidity}%</p>
+          </div>
+          <div className="weather-card"><h3>Condition: </h3>
+            <p>{weather.current.condition.text}</p>
+          </div>
+          <div className="weather-card"><h3>Wind Speed: </h3>
+            <p>{weather.current.wind_kph} kph</p>
+          </div>
         </div>
       )}
     </div>
